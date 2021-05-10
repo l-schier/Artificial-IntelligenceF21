@@ -91,9 +91,6 @@ def successor_fn(state):  # Lookup list of successor states
             out.append(stateThing)
     return out
 
-
-    return STATE_SPACE[state]  # successor_fn( 'C' ) returns ['F', 'G']
-
 # (farmer, wolf, goat, cabbage)
 GOAL_STATE = ('E','E','E','E')
 INITIAL_STATE = ('W','W','W','W')
