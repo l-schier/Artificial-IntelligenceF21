@@ -1,3 +1,5 @@
+import math
+
 def alpha_beta_decision(state):
     infinity = float('inf')
 
@@ -32,15 +34,56 @@ def alpha_beta_decision(state):
 
 
 def is_terminal(state):
-    pass
-
+    """
+    returns True if the state is either a win or a tie (board full)
+    :param state: State of the checkerboard. Ex: [0; 1; 2; 3; X; 5; 6; 7; 8]
+    :return:
+    """
+    splittableStack = False
+    for i in state:
+        if i > 2:
+            splittableStack = True
+    return not splittableStack
 
 def utility_of(state):
-    pass
+    """
+    returns +1 if winner is X (MAX player), -1 if winner is O (MIN player), or 0 otherwise
+    :param state: State of the checkerboard. Ex: [0; 1; 2; 3; X; 5; 6; 7; 8]
+    :return:
+    """
+    if len(state) % 2 == 0:
+        return 1
+    else: 
+        return -1
+    return 0
+    
 
 
 def successors_of(state):
-    pass
+    """
+    returns a list of tuples (move, state) as shown in the exercise slides
+    :param state: State of the checkerboard. Ex: [0; 1; 2; 3; X; 5; 6; 7; 8]
+    :return:
+    """
+    out = []
+    for i in state:
+        if i > 2:
+            index = state.index(i)
+            a = math.floor(i / 2.0)
+            b = math.ceil(i / 2.0)
+            if a == b:
+                a -= 1
+                b += 1
+            while a >= 1:
+                stateCopy = state[:]
+                stateCopy.pop(index)
+                stateCopy.append(a)
+                stateCopy.append(b)
+                out.append(stateCopy)
+                a -= 1
+                b += 1
+
+    return out
 
 
 def argmax(iterable, func):
@@ -93,7 +136,7 @@ def user_select_pile(list_of_piles):
 
 
 def main():
-    state = [7]
+    state = [20]
 
     while not is_terminal(state):
         state = user_select_pile(state)

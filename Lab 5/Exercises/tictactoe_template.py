@@ -28,7 +28,29 @@ def is_terminal(state):
     :param state: State of the checkerboard. Ex: [0; 1; 2; 3; X; 5; 6; 7; 8]
     :return:
     """
-    pass
+    
+    # Vertical can add  and state[i] = 'X'
+    for i in range(0, 7, 3):
+        if state[i] == state[i+1] and state[i+1] == state[i+2]:
+            return True
+    # Horizontal
+    for i in range(0, 3):
+        if state[i] == state[i+3] and state[i+3] == state[i+6]:
+            return True
+    # Diagonal
+    if state[0] == state[4] and state[4] == state[8]:
+         return True
+       
+    elif state[6] == state[4] and state[4] == state[2]:
+        return True
+
+    for i in state:
+        if isinstance(i, int):
+            return False
+    return True
+        
+
+    
 
 
 def utility_of(state):
@@ -37,7 +59,34 @@ def utility_of(state):
     :param state: State of the checkerboard. Ex: [0; 1; 2; 3; X; 5; 6; 7; 8]
     :return:
     """
-    pass
+    
+    for i in range(0, 7, 3):
+        if state[i] == state[i+1] and state[i+1] == state[i+2]:
+            if state[i] == 'X':
+                return 1
+            else:
+                return -1
+    # Horizontal
+    for i in range(0, 3):
+        if state[i] == state[i+3] and state[i+3] == state[i+6]:
+            if state[i] == 'X':
+                return 1
+            else:
+                return -1
+    # Diagonal
+    if state[0] == state[4] and state[4] == state[8]:
+        if state[0] == 'X':
+            return 1
+        else:
+            return -1
+       
+    elif state[6] == state[4] and state[4] == state[2]:
+        if state[6] == 'X':
+            return 1
+        else:
+            return -1
+    return 0
+    
 
 
 def successors_of(state):
@@ -46,7 +95,13 @@ def successors_of(state):
     :param state: State of the checkerboard. Ex: [0; 1; 2; 3; X; 5; 6; 7; 8]
     :return:
     """
-    pass
+    out = []
+    for i in state:
+        stateCopy = state[:]
+        if isinstance(i, int):
+            stateCopy[i] = 'X'
+            out.append((i, stateCopy))
+    return out
 
 
 def display(state):
