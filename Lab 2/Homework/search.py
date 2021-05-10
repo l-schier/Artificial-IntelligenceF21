@@ -80,16 +80,38 @@ def REMOVE_FIRST(queue):
 Successor function, mapping the nodes to its successors
 '''
 def successor_fn(state):  # Lookup list of successor states
+    out = []
+    for stateThing in STATE_SPACE[state]:
+        farmer, wolf, goat, cabbage = stateThing
+        if wolf == goat and wolf != farmer:
+            pass
+        elif goat == cabbage and goat != farmer:
+            pass
+        else:
+            out.append(stateThing)
+    return out
+
+
     return STATE_SPACE[state]  # successor_fn( 'C' ) returns ['F', 'G']
 
-GOAL_STATE = ('B', 'Clean', 'Clean')
-INITIAL_STATE = ('A', 'Dirty', 'Dirty')
-STATE_SPACE = {('A', 'Dirty', 'Dirty') : [('A', 'Clean', 'Dirty'), ('A', 'Dirty', 'Dirty'), ('B', 'Dirty', 'Dirty')],
-               ('A', 'Clean', 'Dirty') : [('A', 'Clean', 'Dirty'), ('B', 'Clean', 'Dirty')],
-               ('A', 'Dirty', 'Clean'): [('A', 'Dirty', 'Clean'), ('A', 'Clean', 'Clean'), ('B', 'Dirty', 'Clean')],
-               ('B', 'Dirty', 'Dirty'): [('A', 'Dirty', 'Dirty'), ('B', 'Dirty', 'Dirty'), ('B', 'Dirty', 'Clean')],
-               ('B', 'Clean', 'Dirty'): [('A', 'Clean', 'Dirty'), ('B', 'Clean', 'Clean'), ('B', 'Clean', 'Dirty')],
-               ('B', 'Dirty', 'Clean'): [('A', 'Dirty', 'Clean'), ('B', 'Dirty', 'Clean')],}
+# (farmer, wolf, goat, cabbage)
+GOAL_STATE = ('E','E','E','E')
+INITIAL_STATE = ('W','W','W','W')
+STATE_SPACE = {('W','W','W','W') : [('E','W','W','W'),('E','E','W','W'), ('E','W','E','W'), ('E','W','W','E')],
+               ('E','W','W','W') : [('W','W','W','W')],
+               ('E','E','W','W'): [('W','E','W','W'),('W','W','W','W')],
+               ('E','W','E','W'): [('W','W','E','W'),('W','W','W','W')],
+               ('E','W','W','E'): [('W','W','W','E'),('W','W','W','W')], 
+               ('W','E','W','W'): [('E','E','E','W'), ('E','E','W','E'), ('E','E','W','W')],
+               ('W','W','E','W'): [('E','E','E','W'), ('E','W','E','E'), ('E','W','E','W')],
+               ('W','W','W','E'): [('E','E','W','E'), ('E','W','E','E'), ('E','W','W','E')],
+               ('E','E','E','W'): [('W','W','E','W'), ('W','E','W','W'), ('W','E','E','W')],
+               ('E','E','W','E'): [('W','W','W','E'), ('W','E','W','W'), ('W','E','W','E')],
+               ('E','W','E','E'): [('W','W','W','E'), ('W','W','E','W'), ('W','W','E','E')],
+               ('W','E','E','W'): [('E','E','E','E'), ('E','E','E','W')],
+               ('W','E','W','E'): [('E','E','E','E'), ('E','E','W','E')],
+               ('W','W','E','E'): [('E','E','E','E'), ('E','W','E','E')],
+               }
 
 
 '''
