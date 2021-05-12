@@ -383,8 +383,76 @@ def sprinkler():
 
     print('')
 
-    # sample = create_random_sample(network)
-    # print_joint_probability(network, sample)
+    #sample = create_random_sample(network)
+    #print_joint_probability(network, sample)
 
+def car():
+    # the values kept as dictionary
+    dt = {(): (0.3, 0.7)}
+    ftl = {(): (0.2, 0.8)}
+    em = {(): (0.3, 0.7)}
+    vDt = {(): (0.7, 0.1)}
+    t1 = {
+        ('true', 'true'): (0.05, 1 - 0.05),
+        ('true', 'false'): (0.6, 1 - 0.6),
+        ('false', 'true'): (0.3, 1 - 0.3),
+        ('false', 'false'): (0.7, 1 - 0.7)
+    }
+    t2 = {
+        ('true', 'true', 'true'): (0.9, 1 - 0.9),
+        ('true', 'true', 'false'): (0.8, 1 - 0.8),
+        ('true', 'false', 'true'): (0.3, 1 - 0.3),
+        ('true', 'false', 'false'): (0.2, 1 - 0.2),
+        ('false', 'true', 'true'): (0.6, 1 - 0.6),
+        ('false', 'true', 'false'): (0.5, 1 - 0.5),
+        ('false', 'false', 'true'): (0.1, 1 - 0.1),
+        ('false', 'false', 'false'): (0.01, 1 - 0.01),
+    }
+    
 
-sprinkler()
+    # creation of Nodes objects
+    damagedTire = Variable('Damaged Tire', ('true', 'false'), dt)
+    fuelLeak = Variable('Fuel Tank Leaking', ('true', 'false'), ftl)
+    elMal = Variable('Electronics Malfunctioning', ('true', 'false'), em)
+    vib = Variable('Vibrations', ('true', 'false'), vDt, [damagedTire])
+    sms = Variable('Slow Max Speed', ('true', 'false'), t1, [damagedTire, elMal])
+    hc = Variable('High Consumption', ('true', 'false'), t2, [damagedTire, elMal, fuelLeak])
+
+    variables = [damagedTire, fuelLeak, elMal, vib, sms, hc]
+
+    # creation of Network
+    network = BayesianNetwork()
+    network.set_variables(variables)
+
+    # pre-calculate marginals
+    # network.calculate_marginal_probabilities()
+
+    # print_marginal_probabilities(network)
+
+    print('')
+
+    joint_values = {
+        'Damaged Tire': 'true',
+        'Fuel Tank Leaking': 'false',
+        'Electronics Malfunctioning': 'false',
+        'Vibrations': 'false',
+        'Slow Max Speed': 'false',
+        'High Consumption': 'true'
+    }
+    #print_joint_probability(network, joint_values)
+
+    print('')
+
+    conditionals_vars = {'Sprinkler': 'true'}
+    conditionals_evidents = {'WetGrass': 'true'}
+
+    # print_conditional_probability(network, conditionals_vars, conditionals_evidents)
+
+    print('')
+
+    #sample = create_random_sample(network)
+    #print_joint_probability(network, sample)
+
+car()
+#sprinkler()
+
