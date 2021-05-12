@@ -1,4 +1,6 @@
 import numpy as np
+from numpy.core.numeric import Infinity
+from numpy.lib.function_base import append
 
 """
 Hidden Markov Model using Viterbi algorithm to find most
@@ -19,7 +21,7 @@ def main():
     observationss = [
         [None, 3, 1, 3],
         [None, 3, 3, 1, 1, 2, 2, 3, 1, 3],
-        [None, 3, 3, 1, 1, 2, 3, 3, 1, 2],
+        [None, 3, 3, 1, 1, 2, 3, 3, 1, 2]
     ]
 
     # Markov transition matrix
@@ -66,10 +68,15 @@ def compute_forward(states, observations, transitions, emissions):
 
     # probability matrix - all values initialized to 5, as 0 has meaning in the matrix
     forward = np.ones((big_n + 2, big_t + 1)) * 5
-
-    '''
-    FINISH FUNCITON
-    '''
+    for s in range(1, big_n):
+        forward[s,1] = transitions[0,s] * emissions[s,observations[1]]
+    for t in range(2, big_t):
+        for s in range(1, big_n):
+            for sS in range(1, big_n):
+                forward[s,t] += forward[sS, t - 1] * transitions[sS, s] * emissions[s, observations[t]]
+    for s in range(1, big_n):
+        forward[f, big_t] += forward[s, big_t] * transitions[s, f]
+    return forward[f, big_t]
     
 
 
@@ -90,14 +97,40 @@ def compute_viterbi(states, observations, transitions, emissions):
     # the states
     # all values initialized to 5, as 0 is valid value in matrix
     backpointers = np.ones((big_n + 2, big_t + 1), dtype=int) * 5
-
-    return []
-    '''
-    FINISH FUNCTION
-    '''
-
     
-
+    for s in range(1, big_n):
+        viterbi[s, 1] = transitions[0, s] * emissions[s, observations[1]]
+        backpointers[s, 1] = 0
+    for t in range(2, big_t):
+        for s in range(1, big_n):
+            maxViter = -Infinity
+            for ss in range(1, big_n):
+                temp = viterbi[ss, t - 1] * transitions[ss, s] * emissions[s, observations[t]]
+                if temp > maxViter:
+                    maxViter = temp
+            backArgmax = []
+            for ss in range(1, big_n):
+                backArgmax.append(viterbi[ss, t - 1] * transitions[ss, s])
+            viterbi[s, t] = maxViter
+            backpointers[s, t] = argmax(backArgmax)
+    maxViter = -Infinity
+    for s in range(1, big_n):
+        temp = viterbi[s, big_t] * transitions[s, f]
+        if temp > maxViter:
+            maxViter = temp
+    backArgmax = []
+    for s in range(1, big_n):
+        backArgmax.append(viterbi[s, big_t] * transitions[s, f])
+    
+    viterbi[f, big_t] = maxViter
+    backpointers[f, big_t] = argmax(backArgmax)
+    
+    out = []
+    ff = backpointers[f, big_t]
+    for t in range(1, big_t):
+        out.append(states[backpointers[ff, t]])
+    out.append(states[backpointers[f, big_t]])
+    return out
 
 def argmax(sequence):
     # Note: You could use np.argmax(sequence), but only if sequence is a list.
